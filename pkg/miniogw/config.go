@@ -21,7 +21,7 @@ import (
 	"storj.io/storj/pkg/storage/objects"
 	segment "storj.io/storj/pkg/storage/segments"
 	streams "storj.io/storj/pkg/storage/streams"
-	"storj.io/storj/pkg/transport/tlstransport"
+	"storj.io/storj/pkg/transport"
 )
 
 // RSConfig is a configuration struct that keeps details about default
@@ -125,7 +125,7 @@ func (c Config) action(ctx context.Context, cliCtx *cli.Context, identity *provi
 func (c Config) GetBucketStore(ctx context.Context, identity *provider.FullIdentity) (bs buckets.Store, err error) {
 	defer mon.Task()(&ctx)(&err)
 
-	tr := tlstransport.New(identity)
+	tr := transport.New(identity)
 
 	var oc overlay.Client
 	oc, err = overlay.NewOverlayClient(identity, c.OverlayAddr)
