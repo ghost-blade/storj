@@ -16,7 +16,7 @@ import (
 // Node is the storj definition for a node in the network
 type Node struct {
 	self   pb.Node
-	dialer transport.Dialer
+	transport transport.Transport
 	cache  pool.Pool
 }
 
@@ -31,7 +31,7 @@ func (n *Node) Lookup(ctx context.Context, to pb.Node, find pb.Node) ([]*pb.Node
 	if c, ok := v.(*grpc.ClientConn); ok {
 		conn = c
 	} else {
-		c, err := n.dialer.DialNode(ctx, &to)
+		c, err := n.transport.DialNode(ctx, &to)
 		if err != nil {
 			return nil, err
 		}

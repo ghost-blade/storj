@@ -21,7 +21,7 @@ var NodeClientErr = errs.Class("node client error")
 func NewNodeClient(identity *provider.FullIdentity, self pb.Node) (Client, error) {
 	return &Node{
 		self:   self,
-		dialer: transport.New(identity),
+		transport: transport.New(identity),
 		cache:  pool.NewConnectionPool(),
 	}, nil
 }

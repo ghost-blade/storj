@@ -40,8 +40,7 @@ type Provider struct {
 
 // NewProvider creates a Provider out of an Identity, a net.Listener, and a set
 // of responsibilities.
-func NewProvider(identity *FullIdentity, lis net.Listener,
-	responsibilities ...Responsibility) (*Provider, error) {
+func NewProvider(identity *FullIdentity, lis net.Listener, responsibilities ...Responsibility) (*Provider, error) {
 	// NB: talk to anyone with an identity
 	ident, err := identity.ServerOption()
 	if err != nil {
@@ -115,8 +114,7 @@ func (p *Provider) Run(ctx context.Context) (err error) {
 	return p.g.Serve(p.lis)
 }
 
-func streamInterceptor(srv interface{}, ss grpc.ServerStream,
-	info *grpc.StreamServerInfo, handler grpc.StreamHandler) (err error) {
+func streamInterceptor(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) (err error) {
 	err = handler(srv, ss)
 	if err != nil {
 		// modified for wrong file downloads
@@ -129,8 +127,7 @@ func streamInterceptor(srv interface{}, ss grpc.ServerStream,
 	return err
 }
 
-func unaryInterceptor(ctx context.Context, req interface{},
-	info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{},
+func unaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{},
 	err error) {
 	resp, err = handler(ctx, req)
 	if err != nil {

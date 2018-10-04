@@ -59,7 +59,7 @@ func TestNewECClient(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	tc := NewMockClient(ctrl)
+	tc := NewMockTransport(ctrl)
 	mbm := 1234
 
 	privKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
@@ -95,7 +95,7 @@ func TestDefaultDialer(t *testing.T) {
 	} {
 		errTag := fmt.Sprintf("Test case #%d", i)
 
-		tc := NewMockClient(ctrl)
+		tc := NewMockTransport(ctrl)
 		tc.EXPECT().DialNode(gomock.Any(), node0).Return(nil, tt.err)
 
 		dd := defaultDialer{t: tc, identity: identity}

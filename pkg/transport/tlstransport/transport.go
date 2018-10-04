@@ -5,6 +5,7 @@ package tlstransport
 
 import (
 	"context"
+	"net"
 
 	"google.golang.org/grpc"
 
@@ -35,4 +36,8 @@ func (o *Transport) DialNode(ctx context.Context, node *pb.Node) (conn *grpc.Cli
 		return nil, err
 	}
 	return grpc.Dial(node.Address.Address, dialOpt)
+}
+
+func (o *Transport) Listen(ctx context.Context, address string) (net.Listener, error) {
+	return net.Listen("tcp", address)
 }

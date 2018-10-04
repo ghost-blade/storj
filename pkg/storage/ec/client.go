@@ -38,7 +38,7 @@ type dialer interface {
 }
 
 type defaultDialer struct {
-	t        transport.Dialer
+	t        transport.Transport
 	identity *provider.FullIdentity
 }
 
@@ -59,8 +59,8 @@ type ecClient struct {
 }
 
 // NewClient from the given TransportClient and max buffer memory
-func NewClient(identity *provider.FullIdentity, dialer transport.Dialer, mbm int) Client {
-	d := defaultDialer{identity: identity, t: dialer}
+func NewClient(identity *provider.FullIdentity, tr transport.Transport, mbm int) Client {
+	d := defaultDialer{identity: identity, t: tr}
 	return &ecClient{d: &d, mbm: mbm}
 }
 

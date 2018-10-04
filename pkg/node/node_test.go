@@ -63,10 +63,12 @@ func newTestServer(ctx context.Context) (*grpc.Server, *mockNodeServer, error) {
 	if err != nil {
 		return nil, nil, err
 	}
+	
 	identity, err := ca.NewIdentity()
 	if err != nil {
 		return nil, nil, err
 	}
+
 	identOpt, err := identity.ServerOption()
 	if err != nil {
 		return nil, nil, err
