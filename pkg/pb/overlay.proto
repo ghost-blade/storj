@@ -10,7 +10,9 @@ package overlay;
 
 // NodeTransport is an enum of possible transports for the overlay network
 enum NodeTransport {
-    TCP = 0;
+    TCP_TLS_GRPC   = 0;
+    TCP_TLS13_GRPC = 1;
+    TCP_Noise_GRPC = 2;
 }
 
 // Overlay defines the interface for communication with the overlay network

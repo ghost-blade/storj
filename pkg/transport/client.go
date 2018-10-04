@@ -31,7 +31,7 @@ type dialer struct {
 func New(identity *provider.FullIdentity) Dialer {
 	return &dialer{
 		transports: map[pb.NodeTransport]Dialer{
-			pb.NodeTransport_TCP: tlstransport.New(identity),
+			pb.NodeTransport_TCP_TLS_GRPC: tlstransport.New(identity),
 		},
 	}
 }

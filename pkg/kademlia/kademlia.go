@@ -21,7 +21,7 @@ import (
 var NodeErr = errs.Class("node error")
 
 //TODO: shouldn't default to TCP but not sure what to do yet
-var defaultTransport = pb.NodeTransport_TCP
+var defaultTransport = pb.NodeTransport_TCP_TLS_GRPC
 
 // Kademlia is an implementation of kademlia adhering to the DHT interface.
 type Kademlia struct {
