@@ -18,19 +18,19 @@ var (
 	Error = errs.Class("tlstransport error")
 )
 
-// Client defines the interface for dialing a node
-type Client interface {
+// Dialer defines the interface for dialing a node
+type Dialer interface {
 	DialNode(ctx context.Context, node *pb.Node) (*grpc.ClientConn, error)
 }
 
 type dialer struct {
-	transports map[pb.NodeTransport]Client
+	transports map[pb.NodeTransport]Dialer
 }
 
 // New creates an automatic dialer that selects the correct transport
-func New(identity *provider.FullIdentity) Client {
+func New(identity *provider.FullIdentity) Dialer {
 	return &dialer{
-		transports: map[pb.NodeTransport]Client{
+		transports: map[pb.NodeTransport]Dialer{
 			pb.NodeTransport_TCP: tlstransport.New(identity),
 		},
 	}

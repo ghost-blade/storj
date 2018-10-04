@@ -19,11 +19,10 @@ var NodeClientErr = errs.Class("node client error")
 
 // NewNodeClient instantiates a node client
 func NewNodeClient(identity *provider.FullIdentity, self pb.Node) (Client, error) {
-	client := transport.New(identity)
 	return &Node{
-		self:  self,
-		tc:    client,
-		cache: pool.NewConnectionPool(),
+		self:   self,
+		dialer: transport.New(identity),
+		cache:  pool.NewConnectionPool(),
 	}, nil
 }
 

@@ -38,7 +38,7 @@ type dialer interface {
 }
 
 type defaultDialer struct {
-	t        transport.Client
+	t        transport.Dialer
 	identity *provider.FullIdentity
 }
 
@@ -59,8 +59,8 @@ type ecClient struct {
 }
 
 // NewClient from the given TransportClient and max buffer memory
-func NewClient(identity *provider.FullIdentity, t transport.Client, mbm int) Client {
-	d := defaultDialer{identity: identity, t: t}
+func NewClient(identity *provider.FullIdentity, dialer transport.Dialer, mbm int) Client {
+	d := defaultDialer{identity: identity, t: dialer}
 	return &ecClient{d: &d, mbm: mbm}
 }
 
@@ -82,7 +82,7 @@ func (ec *ecClient) Put(ctx context.Context, nodes []*pb.Node, rs eestream.Redun
 	}
 
 	type info struct {
-		i int
+		i   int
 		err error
 	}
 	infos := make(chan info, len(nodes))
@@ -153,7 +153,7 @@ func (ec *ecClient) Get(ctx context.Context, nodes []*pb.Node, es eestream.Erasu
 	ch := make(chan rangerInfo, len(nodes))
 
 	for i, n := range nodes {
-		if (n == nil) {
+		if n == nil {
 			ch <- rangerInfo{i: i, rr: nil, err: nil}
 			continue
 		}
