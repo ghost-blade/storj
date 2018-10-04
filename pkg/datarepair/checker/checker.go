@@ -5,49 +5,31 @@ package checker
 
 import (
 	"context"
-	"time"
 
-	"github.com/zeebo/errs"
-	"go.uber.org/zap"
-	monkit "gopkg.in/spacemonkeygo/monkit.v2"
-
-	"storj.io/storj/pkg/provider"
-)
-
-var (
-	mon = monkit.Package()
-	// Error is a standard error class for this package.
-	Error = errs.Class("checker error")
+	"storj.io/storj/pkg/datarepair/queue"
+	"storj.io/storj/storage/redis"
+	"storj.io/storj/storage/redis/redisserver"
 )
 
 // Config contains configurable values for checker
 type Config struct {
-	// QueueAddress string `help:"data repair queue address" default:"redis://localhost:6379?db=5&password=123"`
-	Interval time.Duration `help:"how frequently checker should audit segments" default:"30s"`
+	queueAddress string
+	redisDB      int
+	dbpassword   string //REMOVE
+	// queueAddress string `help:"data repair queue address" default:"localhost:7777"`
 }
 
 // Run runs the checker with configured values
-func (c Config) Run(ctx context.Context, server *provider.Provider) (err error) {
-	defer mon.Task()(&ctx)(&err)
+func (c *Config) Run(ctx context.Context) (err error) {
+	addr, cleanup, err := redisserver.Start()
+	if err != nil {
+		return err
+	}
+	client, err := redis.NewClient(addr, c.dbpassword, c.redisDB)
+	if err != nil {
+		return err
+	}
+	q := queue.NewQueue(client)
 
-	zap.S().Info("Checker is starting up")
-
-	ticker := time.NewTicker(c.Interval)
-	defer ticker.Stop()
-
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				zap.S().Info("Starting segment checker service")
-			case <-ctx.Done():
-				return
-			}
-		}
-	}()
-
-	return server.Run(ctx)
+	return nil
 }
