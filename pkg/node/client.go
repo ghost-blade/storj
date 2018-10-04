@@ -11,7 +11,7 @@ import (
 	"storj.io/storj/pkg/pb"
 	"storj.io/storj/pkg/pool"
 	"storj.io/storj/pkg/provider"
-	"storj.io/storj/pkg/transport"
+	"storj.io/storj/pkg/transport/tlstransport"
 )
 
 //NodeClientErr is the class for all errors pertaining to node client operations
@@ -19,7 +19,7 @@ var NodeClientErr = errs.Class("node client error")
 
 // NewNodeClient instantiates a node client
 func NewNodeClient(identity *provider.FullIdentity, self pb.Node) (Client, error) {
-	client := transport.NewClient(identity)
+	client := tlstransport.New(identity)
 	return &Node{
 		self:  self,
 		tc:    client,

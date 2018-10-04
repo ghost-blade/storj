@@ -1,7 +1,7 @@
 // Copyright (C) 2018 Storj Labs, Inc.
 // See LICENSE for copying information.
 
-package transport
+package tlstransport
 
 import (
 	"context"
@@ -17,8 +17,8 @@ type Transport struct {
 	identity *provider.FullIdentity
 }
 
-// NewClient returns a newly instantiated Transport Client
-func NewClient(identity *provider.FullIdentity) *Transport {
+// New returns a newly instantiated Transport Client
+func New(identity *provider.FullIdentity) *Transport {
 	return &Transport{identity: identity}
 }
 
