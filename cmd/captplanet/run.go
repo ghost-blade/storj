@@ -105,7 +105,7 @@ func cmdRun(cmd *cobra.Command, args []string) (err error) {
 	go func() {
 		m := miniredis.NewMiniRedis()
 		m.StartAddr(":6379")
-	}
+	}()
 
 	// start satellite
 	go func() {
