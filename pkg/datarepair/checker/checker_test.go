@@ -112,7 +112,6 @@ func TestOfflineAndOnlineNodes(t *testing.T) {
 	nodes := []*pb.Node{}
 	nodeIDs := []dht.NodeID{}
 	expectedOffline := []int32{}
-	expectedOnline := []int32{}
 	for i := 0; i < N; i++ {
 		str := strconv.Itoa(i)
 		n := &pb.Node{Id: str, Address: &pb.NodeAddress{Address: str}}
@@ -124,7 +123,6 @@ func TestOfflineAndOnlineNodes(t *testing.T) {
 		} else {
 			id := node.IDFromString(str)
 			nodeIDs = append(nodeIDs, id)
-			expectedOnline = append(expectedOnline, int32(i))
 		}
 	}
 	overlayServer := mocks.NewOverlay(nodes)
