@@ -33,7 +33,6 @@ const (
 var RedundancyScheme_SchemeType_name = map[int32]string{
 	0: "RS",
 }
-
 var RedundancyScheme_SchemeType_value = map[string]int32{
 	"RS": 0,
 }
@@ -41,7 +40,6 @@ var RedundancyScheme_SchemeType_value = map[string]int32{
 func (x RedundancyScheme_SchemeType) String() string {
 	return proto.EnumName(RedundancyScheme_SchemeType_name, int32(x))
 }
-
 func (RedundancyScheme_SchemeType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_pointerdb_0dacb70a10f42023, []int{0, 0}
 }
@@ -57,7 +55,6 @@ var EncryptionScheme_EncryptionType_name = map[int32]string{
 	0: "AESGCM",
 	1: "SECRETBOX",
 }
-
 var EncryptionScheme_EncryptionType_value = map[string]int32{
 	"AESGCM":    0,
 	"SECRETBOX": 1,
@@ -66,7 +63,6 @@ var EncryptionScheme_EncryptionType_value = map[string]int32{
 func (x EncryptionScheme_EncryptionType) String() string {
 	return proto.EnumName(EncryptionScheme_EncryptionType_name, int32(x))
 }
-
 func (EncryptionScheme_EncryptionType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_pointerdb_0dacb70a10f42023, []int{1, 0}
 }
@@ -82,7 +78,6 @@ var Pointer_DataType_name = map[int32]string{
 	0: "INLINE",
 	1: "REMOTE",
 }
-
 var Pointer_DataType_value = map[string]int32{
 	"INLINE": 0,
 	"REMOTE": 1,
@@ -91,7 +86,6 @@ var Pointer_DataType_value = map[string]int32{
 func (x Pointer_DataType) String() string {
 	return proto.EnumName(Pointer_DataType_name, int32(x))
 }
-
 func (Pointer_DataType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_pointerdb_0dacb70a10f42023, []int{4, 0}
 }
