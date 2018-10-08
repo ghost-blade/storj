@@ -76,9 +76,7 @@ func (c *Checker) IdentifyInjuredSegments(ctx context.Context) (err error) {
 	defer mon.Task()(&ctx)(&err)
 	c.logger.Debug("entering pointerdb iterate")
 
-	err = c.pointerdb.Iterate(ctx, &pb.IterateRequest{
-		Recurse: true,
-	},
+	err = c.pointerdb.Iterate(ctx, &pb.IterateRequest{Recurse: true},
 		func(it storage.Iterator) error {
 			var item storage.ListItem
 			if c.limit <= 0 || c.limit > storage.LookupLimit {
