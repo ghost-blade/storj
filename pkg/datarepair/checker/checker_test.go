@@ -13,10 +13,12 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
+
 	"storj.io/storj/pkg/datarepair/queue"
 	"storj.io/storj/pkg/dht"
-	"storj.io/storj/pkg/kademlia"
+	"storj.io/storj/pkg/node"
 	"storj.io/storj/pkg/overlay"
+	"storj.io/storj/pkg/overlay/mocks"
 	"storj.io/storj/pkg/pb"
 	"storj.io/storj/pkg/pointerdb"
 	"storj.io/storj/storage/redis"
@@ -80,7 +82,7 @@ func TestIdentifyInjuredSegments(t *testing.T) {
 		}
 	}
 	//fill a overlay cache
-	overlayServer := overlay.NewMockOverlay(nodes)
+	overlayServer := mocks.NewOverlay(nodes)
 	limit := 0
 	checker := NewChecker(pointerdb, repairQueue, overlayServer, limit, logger)
 	err := checker.IdentifyInjuredSegments(ctx)
@@ -116,16 +118,16 @@ func TestOfflineAndOnlineNodes(t *testing.T) {
 		n := &pb.Node{Id: str, Address: &pb.NodeAddress{Address: str}}
 		nodes = append(nodes, n)
 		if i%(rand.Intn(5)+2) == 0 {
-			id := kademlia.StringToNodeID("id" + str)
+			id := node.IDFromString("id" + str)
 			nodeIDs = append(nodeIDs, id)
 			expectedOffline = append(expectedOffline, int32(i))
 		} else {
-			id := kademlia.StringToNodeID(str)
+			id := node.IDFromString(str)
 			nodeIDs = append(nodeIDs, id)
 			expectedOnline = append(expectedOnline, int32(i))
 		}
 	}
-	overlayServer := overlay.NewMockOverlay(nodes)
+	overlayServer := mocks.NewOverlay(nodes)
 	limit := 0
 	checker := NewChecker(pointerdb, repairQueue, overlayServer, limit, logger)
 	offline, err := checker.offlineNodes(ctx, nodeIDs)
@@ -192,7 +194,7 @@ func BenchmarkIdentifyInjuredSegments(b *testing.B) {
 		}
 	}
 	//fill a overlay cache
-	overlayServer := overlay.NewMockOverlay(nodes)
+	overlayServer := mocks.NewOverlay(nodes)
 	limit := 0
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
