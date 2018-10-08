@@ -5,31 +5,47 @@ package checker
 
 import (
 	"context"
+	"time"
 
-	"storj.io/storj/pkg/datarepair/queue"
-	"storj.io/storj/storage/redis"
-	"storj.io/storj/storage/redis/redisserver"
+	"go.uber.org/zap"
+
+	"storj.io/storj/pkg/datarepair"
+	"storj.io/storj/pkg/provider"
 )
 
 // Config contains configurable values for checker
 type Config struct {
-	queueAddress string
-	redisDB      int
-	dbpassword   string //REMOVE
-	// queueAddress string `help:"data repair queue address" default:"localhost:7777"`
+	QueueAddress string `help:"data repair queue address" default:"redis://localhost:6379?db=5&password=123"`
+	Interval time.Duration `help:"how frequently checker should audit segments" default:"30s"`
 }
 
 // Run runs the checker with configured values
-func (c *Config) Run(ctx context.Context) (err error) {
-	addr, cleanup, err := redisserver.Start()
-	if err != nil {
-		return err
-	}
-	client, err := redis.NewClient(addr, c.dbpassword, c.redisDB)
-	if err != nil {
-		return err
-	}
-	q := queue.NewQueue(client)
+func (c Config) Run(ctx context.Context, server *provider.Provider) (err error) {
+	defer datarepair.Mon.Task()(&ctx)(&err)
 
-	return nil
+	zap.S().Info("Checker is starting up")
+
+	ticker := time.NewTicker(c.Interval)
+	defer ticker.Stop()
+
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				zap.S().Info("Starting segment checker service")
+				//get queue
+				//get pointerdb
+				//get overlay
+				// c := NewChecker(params, pointerdb, repairQueue, overlay, logger) 
+				//c.IdentifyInjuredSegments(ctx) (TODO: goroutine)
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+
+	return server.Run(ctx)
 }
