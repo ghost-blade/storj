@@ -36,11 +36,14 @@ func (c Config) Run(ctx context.Context, server *provider.Provider) (err error) 
 			select {
 			case <-ticker.C:
 				zap.S().Info("Starting segment checker service")
-				//get queue
-				//get pointerdb
-				//get overlay
-				// c := NewChecker(params, pointerdb, repairQueue, overlay, logger) 
-				//c.IdentifyInjuredSegments(ctx) (TODO: goroutine)
+				go func() {
+					//get queue
+					//get pointerdb
+					//get overlay
+					// c := NewChecker(params, pointerdb, repairQueue, overlay, logger) 
+					// err := c.IdentifyInjuredSegments(ctx) 
+				}()
+
 			case <-ctx.Done():
 				return
 			}
