@@ -73,8 +73,8 @@ func TestIdentifyInjuredSegments(t *testing.T) {
 		//expected injured segments
 		if len(ids[:selection]) < int(p.Remote.Redundancy.RepairThreshold) {
 			seg := &pb.InjuredSegment{
-				Path:          p.Remote.PieceId,
-				LostPieces:    pieces[selection:],
+				Path:       p.Remote.PieceId,
+				LostPieces: pieces[selection:],
 			}
 			segs = append(segs, seg)
 		}
@@ -185,8 +185,8 @@ func BenchmarkIdentifyInjuredSegments(b *testing.B) {
 		//expected injured segments
 		if len(ids[:selection]) < int(p.Remote.Redundancy.RepairThreshold) {
 			seg := &pb.InjuredSegment{
-				Path:          p.Remote.PieceId,
-				LostPieces:    pieces[selection:],
+				Path:       p.Remote.PieceId,
+				LostPieces: pieces[selection:],
 			}
 			segs = append(segs, seg)
 		}
@@ -194,21 +194,24 @@ func BenchmarkIdentifyInjuredSegments(b *testing.B) {
 	//fill a overlay cache
 	overlayServer := overlay.NewMockOverlay(nodes)
 	limit := 0
-	checker := NewChecker(pointerdb, repairQueue, overlayServer, limit, logger)
-	err = checker.IdentifyInjuredSegments(ctx)
-	assert.NoError(b, err)
-
-	//check if the expected segments were added to the queue
-	dequeued := []*pb.InjuredSegment{}
-	for i := 0; i < len(segs); i++ {
-		injSeg, err := repairQueue.Dequeue()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		checker := NewChecker(pointerdb, repairQueue, overlayServer, limit, logger)
+		err = checker.IdentifyInjuredSegments(ctx)
 		assert.NoError(b, err)
-		dequeued = append(dequeued, &injSeg)
-	}
-	sort.Slice(segs, func(i, k int) bool { return segs[i].Path < segs[k].Path })
-	sort.Slice(dequeued, func(i, k int) bool { return dequeued[i].Path < dequeued[k].Path })
 
-	for i := 0; i < len(segs); i++ {
-		assert.True(b, proto.Equal(segs[i], dequeued[i]))
+		//check if the expected segments were added to the queue
+		dequeued := []*pb.InjuredSegment{}
+		for i := 0; i < len(segs); i++ {
+			injSeg, err := repairQueue.Dequeue()
+			assert.NoError(b, err)
+			dequeued = append(dequeued, &injSeg)
+		}
+		sort.Slice(segs, func(i, k int) bool { return segs[i].Path < segs[k].Path })
+		sort.Slice(dequeued, func(i, k int) bool { return dequeued[i].Path < dequeued[k].Path })
+
+		for i := 0; i < len(segs); i++ {
+			assert.True(b, proto.Equal(segs[i], dequeued[i]))
+		}
 	}
 }
