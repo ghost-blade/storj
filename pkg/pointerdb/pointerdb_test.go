@@ -317,3 +317,9 @@ func TestServiceList(t *testing.T) {
 		}
 	}
 }
+
+func TestIterate(t *testing.T) {
+	// db := teststore.New()
+	// server := Server{DB: db, logger: zap.NewNop()}
+	panic("TODO")
+}	
